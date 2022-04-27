@@ -125,7 +125,7 @@ func main() {
 	// Event: EventFoo, State: StateBar -> StateFoo, Result: <nil>
 	//
 	// ------ Transition ------
-	// Event: EventFoo, State: StateFoo -> StateFoo, Result: no the transition for the event 'EventFoo'
+	// Event: EventFoo, State: StateFoo -> StateFoo, Result: no transition for the event 'EventFoo'
 	//
 	// ------ Transition ------
 	// OnExitState: StateFoo
