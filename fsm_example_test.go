@@ -12,33 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package fsm_test
+package fsm
 
-import (
-	"fmt"
-
-	gofsm "github.com/xgfone/go-fsm"
-)
+import "fmt"
 
 func ExampleFSM() {
 	const (
-		StateFoo = gofsm.State("StateFoo")
-		StateBar = gofsm.State("StateBar")
+		StateFoo = State("StateFoo")
+		StateBar = State("StateBar")
 	)
 
 	const (
-		EventFoo = gofsm.Event("EventFoo")
-		EventBar = gofsm.Event("EventBar")
+		EventFoo = Event("EventFoo")
+		EventBar = Event("EventBar")
 	)
 
-	fsm := gofsm.New()
+	fsm := New()
 	fsm.SetInitial(StateFoo)
 
 	/// Add the state transitions.
 	var barCount int
-	gofsm.Source(StateFoo).WithTarget(StateBar).WithEvent(EventBar).Add(fsm) // No Action
-	gofsm.Target(StateFoo).WithSource(StateBar).WithEvent(EventFoo).
-		WithAction(func(fsm *gofsm.FSM, data interface{}) (transition bool) { // Set Action
+	Source(StateFoo).WithTarget(StateBar).WithEvent(EventBar).Add(fsm) // No Action
+	Target(StateFoo).WithSource(StateBar).WithEvent(EventFoo).
+		WithAction(func(fsm *FSM, data interface{}) (transition bool) { // Set Action
 			// TODO: do business something
 
 			// Here as the example, after trigger the event EventFoo two twice,
@@ -54,16 +50,16 @@ func ExampleFSM() {
 		Add(fsm)
 
 	/// Set the listener of the state change.
-	fsm.OnEnter(func(s gofsm.State) { fmt.Printf("OnEnter: %s\n", s) })
-	fsm.OnExit(func(s gofsm.State) { fmt.Printf("OnExit: %s\n", s) })
+	fsm.OnEnter(func(s State) { fmt.Printf("OnEnter: %s\n", s) })
+	fsm.OnExit(func(s State) { fmt.Printf("OnExit: %s\n", s) })
 
-	fsm.OnEnterState(StateFoo, func(s gofsm.State) { fmt.Printf("OnEnterState: %s\n", s) })
-	fsm.OnEnterState(StateBar, func(s gofsm.State) { fmt.Printf("OnEnterState: %s\n", s) })
+	fsm.OnEnterState(StateFoo, func(s State) { fmt.Printf("OnEnterState: %s\n", s) })
+	fsm.OnEnterState(StateBar, func(s State) { fmt.Printf("OnEnterState: %s\n", s) })
 
-	fsm.OnExitState(StateFoo, func(s gofsm.State) { fmt.Printf("OnExitState: %s\n", s) })
-	fsm.OnExitState(StateBar, func(s gofsm.State) { fmt.Printf("OnExitState: %s\n", s) })
+	fsm.OnExitState(StateFoo, func(s State) { fmt.Printf("OnExitState: %s\n", s) })
+	fsm.OnExitState(StateBar, func(s State) { fmt.Printf("OnExitState: %s\n", s) })
 
-	fsm.OnTransition(func(last, current gofsm.State) {
+	fsm.OnTransition(func(last, current State) {
 		fmt.Printf("OnTransition: %s -> %s\n", last, current)
 	})
 

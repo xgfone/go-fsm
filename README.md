@@ -1,6 +1,6 @@
 # Go FSM [![GoDoc](https://pkg.go.dev/badge/github.com/xgfone/go-fsm)](https://pkg.go.dev/github.com/xgfone/go-fsm) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=flat-square)](https://raw.githubusercontent.com/xgfone/go-fsm/master/LICENSE) [![Build Status](https://github.com/xgfone/go-fsm/actions/workflows/go.yml/badge.svg)](https://github.com/xgfone/go-fsm/actions/workflows/go.yml)
 
-The package `fsm` provides a simple Non-Hierarchical [Finite State Machines](https://en.wikipedia.org/wiki/Finite-state_machine) based on the event. Support Go `1.5+`.
+The package `fsm` provides a simple Non-Hierarchical [Finite State Machine](https://en.wikipedia.org/wiki/Finite-state_machine) based on the event. Support Go `1.5+`.
 
 
 ## Install
