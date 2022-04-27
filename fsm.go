@@ -40,6 +40,24 @@ type TransitionError struct {
 	Target State
 }
 
+// IsSuspended reports whether the error is that the state transition
+// is suspended by Action.
+func IsSuspended(err error) bool {
+	if te, ok := err.(TransitionError); ok {
+		return te.IsSuspended()
+	}
+	return false
+}
+
+// IsNoTransition reports whether the error is that there is no state transition
+// to support the event.
+func IsNoTransition(err error) bool {
+	if te, ok := err.(TransitionError); ok {
+		return te.IsNoTransition()
+	}
+	return false
+}
+
 // IsSuspended reports whether the state transition is suspended by Action.
 func (e TransitionError) IsSuspended() bool { return len(e.Source) > 0 }
 
