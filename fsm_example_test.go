@@ -16,6 +16,39 @@ package fsm
 
 import "fmt"
 
+func ExampleFSM_SetEvent() {
+	const (
+		StateFoo = State("StateFoo")
+		StateBar = State("StateBar")
+	)
+
+	const (
+		EventFoo = Event("EventFoo")
+		EventBar = Event("EventBar")
+	)
+
+	fsm := New()
+	fsm.SetInitial(StateBar)
+
+	Source(StateFoo).WithTarget(StateBar).WithEvent(EventBar).Add(fsm)
+	Source(StateBar).WithTarget(StateFoo).WithEvent(EventFoo).
+		WithAction(func(fsm *FSM, data interface{}) (transition bool) {
+			fsm.SetEvent(EventBar, nil)
+			return true
+		}).
+		Add(fsm)
+
+	fmt.Println(fsm.Current())          // StateBar
+	err := fsm.SendEvent(EventFoo, nil) // StateBar -> StateFoo -> StateBar
+	fmt.Println(fsm.Current())          // StateBar
+	fmt.Println(err)
+
+	// Output:
+	// StateBar
+	// StateBar
+	// <nil>
+}
+
 func ExampleFSM() {
 	const (
 		StateFoo = State("StateFoo")

@@ -135,6 +135,9 @@ type FSM struct {
 
 	initial State
 	current State
+
+	event Event
+	data  interface{}
 }
 
 // New creates a new finite state machine having the specified initial state.
@@ -219,12 +222,32 @@ func (f *FSM) OnExitState(state State, fn func(State)) { f.exitStates[state] = f
 // when the state is transferred from last to current.
 func (f *FSM) OnTransition(fn func(last, current State)) { f.transition = fn }
 
+// SetEvent sets the event with the data as the new input to continue
+// to transition the state after finishing to transition the last state,
+// which is used in the transition action because SendEvent cannot be used.
+func (f *FSM) SetEvent(event Event, data interface{}) {
+	f.event, f.data = event, data
+}
+
 // SendEvent sends an Event to the state machine, applying at most one transition.
-func (f *FSM) SendEvent(event Event, data interface{}) error {
+func (f *FSM) SendEvent(event Event, data interface{}) (err error) {
 	if event == "" {
 		panic("FSM: the event must not be empty")
 	}
 
+	for {
+		f.SetEvent("", nil)
+		err = f.sendEvent(event, data)
+		if f.event == "" || (err != nil && !IsSuspended(err)) {
+			break
+		}
+		event, data = f.event, f.data
+	}
+
+	return
+}
+
+func (f *FSM) sendEvent(event Event, data interface{}) error {
 	current := f.Current()
 	transitions := f.Transitions()
 	for _len := len(transitions) - 1; _len >= 0; _len-- {
