@@ -241,6 +241,14 @@ func (f *FSM) Terminations() (states []State) {
 // Transitions returns all the transitions.
 func (f *FSM) Transitions() []Transition { return f.transitions }
 
+// GetTransition returns the transition by the source state and the input event.
+func (f *FSM) GetTransition(source State, event Event) (transition Transition, ok bool) {
+	if index := f.indexTransition(source, event); index > -1 {
+		transition, ok = f.transitions[index], true
+	}
+	return
+}
+
 // AddTransitions appends a set of transitions to transfer the state.
 //
 // Notice: the current implementation requires that the source, target
