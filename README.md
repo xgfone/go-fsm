@@ -10,6 +10,7 @@ $ go get -u github.com/xgfone/go-fsm
 
 
 ## Example
+![mermaid-state-diagram](mermaid-state-diagram.svg)
 ```go
 package main
 
