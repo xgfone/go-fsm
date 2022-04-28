@@ -190,6 +190,54 @@ func (f *FSM) Current() State { return f.current }
 // Initial returns the initial state.
 func (f *FSM) Initial() State { return f.initial }
 
+// States returns all the states.
+func (f *FSM) States() (states []State) {
+	transitions := f.Transitions()
+	states = make([]State, 0, len(transitions))
+	for _, t := range transitions {
+		if !hasState(states, t.Source) {
+			states = append(states, t.Source)
+		}
+		if !hasState(states, t.Target) {
+			states = append(states, t.Target)
+		}
+	}
+	return
+}
+
+// Events returns all the events.
+func (f *FSM) Events() (events []Event) {
+	transitions := f.Transitions()
+	events = make([]Event, 0, len(transitions))
+	for _, t := range transitions {
+		if !hasEvent(events, t.Event) {
+			events = append(events, t.Event)
+		}
+	}
+	return
+}
+
+// Terminations returns all the termination states.
+func (f *FSM) Terminations() (states []State) {
+	var sources, targets []State
+	for _, t := range f.Transitions() {
+		if !hasState(sources, t.Source) {
+			sources = append(sources, t.Source)
+		}
+		if !hasState(targets, t.Target) {
+			targets = append(targets, t.Target)
+		}
+	}
+
+	for _, state := range targets {
+		if !hasState(sources, state) {
+			states = append(states, state)
+		}
+	}
+
+	return
+}
+
 // Transitions returns all the transitions.
 func (f *FSM) Transitions() []Transition { return f.transitions }
 
@@ -341,4 +389,22 @@ func getAllSortedStatesFromTransitions(transitions []Transition) []State {
 
 	sort.Stable(states)
 	return states
+}
+
+func hasState(ss []State, s State) bool {
+	for _, _s := range ss {
+		if s == _s {
+			return true
+		}
+	}
+	return false
+}
+
+func hasEvent(es []Event, e Event) bool {
+	for _, _e := range es {
+		if e == _e {
+			return true
+		}
+	}
+	return false
 }

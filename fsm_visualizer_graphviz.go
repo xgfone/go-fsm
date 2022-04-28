@@ -66,12 +66,3 @@ func writeStates(buf *bytes.Buffer, transitions []Transition) {
 func writeFooter(buf *bytes.Buffer) {
 	buf.WriteString(fmt.Sprintln("}"))
 }
-
-func hasState(ss []State, s State) bool {
-	for _, _s := range ss {
-		if s == _s {
-			return true
-		}
-	}
-	return false
-}
