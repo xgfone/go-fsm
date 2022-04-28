@@ -124,7 +124,7 @@ func (t Transition) WithAction(action Action) Transition {
 // Add is a handy proxy method to add the current transition into the given FSM.
 func (t Transition) Add(fsm *FSM) { fsm.AddTransitions(t) }
 
-// FSM is a finite state machine.
+// FSM is a finite state machine without thread-safe.
 type FSM struct {
 	exit        func(State)
 	enter       func(State)
@@ -203,7 +203,23 @@ func (f *FSM) AddTransitions(transitions ...Transition) {
 			panic("invalid state transition: source, target, or event is empty")
 		}
 	}
-	f.transitions = append(f.transitions, transitions...)
+
+	for _, t := range transitions {
+		if index := f.indexTransition(t.Source, t.Event); index > -1 {
+			f.transitions[index] = t
+		} else {
+			f.transitions = append(f.transitions, t)
+		}
+	}
+}
+
+func (f *FSM) indexTransition(source State, event Event) (index int) {
+	for i, t := range f.transitions {
+		if t.Source == source && t.Event == event {
+			return i
+		}
+	}
+	return -1
 }
 
 // OnEnter sets a function that will be called when entering any state.
@@ -221,6 +237,11 @@ func (f *FSM) OnExitState(state State, fn func(State)) { f.exitStates[state] = f
 // OnTransition sets a function that will be called
 // when the state is transferred from last to current.
 func (f *FSM) OnTransition(fn func(last, current State)) { f.transition = fn }
+
+// TestEvent reports whether the event can trigger the state transition.
+func (f *FSM) TestEvent(event Event) bool {
+	return f.indexTransition(f.Current(), event) > -1
+}
 
 // SetEvent sets the event with the data as the new input to continue
 // to transition the state after finishing to transition the last state,
@@ -249,9 +270,7 @@ func (f *FSM) SendEvent(event Event, data interface{}) (err error) {
 
 func (f *FSM) sendEvent(event Event, data interface{}) error {
 	current := f.Current()
-	transitions := f.Transitions()
-	for _len := len(transitions) - 1; _len >= 0; _len-- {
-		t := transitions[_len]
+	for _, t := range f.Transitions() {
 		if t.Source == current && t.Event == event {
 			if t.Action != nil && !t.Action(f, data) {
 				// Transition is suspended.
