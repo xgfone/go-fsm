@@ -30,7 +30,7 @@ func (f *FSM) VisualizeMermaidStateDiagram() string {
 	transitions := cloneAndSortTransitions(f.Transitions())
 
 	buf.WriteString("stateDiagram-v2\n")
-	buf.WriteString(fmt.Sprintln(`    [*] -->`, f.Initial()))
+	buf.WriteString(fmt.Sprintln(`    [*] -->`, f.Current()))
 	for _, t := range transitions {
 		fmt.Fprintf(&buf, `    %s --> %s: %s`+"\n", t.Source, t.Target, t.Event)
 	}
@@ -42,7 +42,7 @@ func (f *FSM) VisualizeMermaidStateDiagram() string {
 // in MermaidFlowChart format.
 //
 // See http://mermaid-js.github.io/mermaid/#/flowchart
-func (f *FSM) VisualizeMermaidFlowChart(initialStateRGB, currentStateRGB string) string {
+func (f *FSM) VisualizeMermaidFlowChart(currentStateRGB string) string {
 	var buf bytes.Buffer
 	buf.Grow(256)
 
@@ -56,7 +56,6 @@ func (f *FSM) VisualizeMermaidFlowChart(initialStateRGB, currentStateRGB string)
 	writeFlowChartGraphType(&buf)
 	writeFlowChartStates(&buf, states, stateIDs)
 	writeFlowChartTransitions(&buf, transitions, states, stateIDs)
-	writeFlowChartHighlight(&buf, stateIDs[f.Initial()], initialStateRGB)
 	writeFlowChartHighlight(&buf, stateIDs[f.Current()], currentStateRGB)
 
 	return buf.String()

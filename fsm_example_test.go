@@ -28,7 +28,7 @@ func ExampleFSM_SetEvent() {
 	)
 
 	fsm := New()
-	fsm.SetInitial(StateBar)
+	fsm.SetCurrent(StateBar)
 
 	Source(StateFoo).WithTarget(StateBar).WithEvent(EventBar).Add(fsm)
 	Source(StateBar).WithTarget(StateFoo).WithEvent(EventFoo).
@@ -61,7 +61,7 @@ func ExampleFSM() {
 	)
 
 	fsm := New()
-	fsm.SetInitial(StateFoo)
+	fsm.SetCurrent(StateFoo)
 
 	/// Add the state transitions.
 	var barCount int
@@ -128,7 +128,7 @@ func ExampleFSM() {
 
 	// Print the Mermaid FlowChart visualizer.
 	fmt.Println("------ Mermaid FlowChart ------")
-	fmt.Println(fsm.VisualizeMermaidFlowChart("#aaaaaa", "#ff0000"))
+	fmt.Println(fsm.VisualizeMermaidFlowChart("#aaaaaa"))
 
 	// Print the Mermaid StateDiagram visualizer.
 	fmt.Println("------ Mermaid StateDiagram ------")
@@ -167,8 +167,8 @@ func ExampleFSM() {
 	//
 	// ------ Graphviz ------
 	// digraph fsm {
-	//     "StateFoo" -> "StateBar" [ label = "EventBar" ];
 	//     "StateBar" -> "StateFoo" [ label = "EventFoo" ];
+	//     "StateFoo" -> "StateBar" [ label = "EventBar" ];
 	//
 	//     "StateBar";
 	//     "StateFoo";
@@ -182,12 +182,11 @@ func ExampleFSM() {
 	//     id0 --> |EventFoo| id1
 	//     id1 --> |EventBar| id0
 	//
-	//     style id1 fill:#aaaaaa
-	//     style id0 fill:#ff0000
+	//     style id0 fill:#aaaaaa
 	//
 	// ------ Mermaid StateDiagram ------
 	// stateDiagram-v2
-	//     [*] --> StateFoo
+	//     [*] --> StateBar
 	//     StateBar --> StateFoo: EventFoo
 	//     StateFoo --> StateBar: EventBar
 	//

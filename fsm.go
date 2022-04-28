@@ -133,14 +133,12 @@ type FSM struct {
 	enterStates map[State]func(State)
 	transitions []Transition
 
-	initial State
 	current State
-
-	event Event
-	data  interface{}
+	event   Event
+	data    interface{}
 }
 
-// New creates a new finite state machine having the specified initial state.
+// New creates a new finite state machine.
 func New() *FSM {
 	return &FSM{
 		enterStates: make(map[State]func(State), 16),
@@ -157,12 +155,7 @@ func (f *FSM) Reset() {
 		delete(f.enterStates, key)
 	}
 
-	*f = FSM{
-		exitStates:  f.exitStates,
-		enterStates: f.enterStates,
-		initial:     f.initial,
-		current:     f.initial,
-	}
+	*f = FSM{exitStates: f.exitStates, enterStates: f.enterStates}
 }
 
 // SetCurrent resets the current state to current.
@@ -173,22 +166,8 @@ func (f *FSM) SetCurrent(current State) {
 	f.current = current
 }
 
-// SetInitial resets the initial state to initial.
-//
-// Notice: it will also set the current state to state.
-func (f *FSM) SetInitial(initial State) {
-	if initial == "" {
-		panic("the initial state must not be empty")
-	}
-	f.initial = initial
-	f.current = initial
-}
-
 // Current returns the current state.
 func (f *FSM) Current() State { return f.current }
-
-// Initial returns the initial state.
-func (f *FSM) Initial() State { return f.initial }
 
 // States returns all the states.
 func (f *FSM) States() (states []State) {

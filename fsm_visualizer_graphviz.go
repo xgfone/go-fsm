@@ -27,7 +27,7 @@ func (f *FSM) VisualizeGraphviz() string {
 	buf.Grow(256)
 
 	writeHeaderLine(&buf)
-	writeTransitions(&buf, f.Initial(), transitions)
+	writeTransitions(&buf, f.Current(), transitions)
 	writeStates(&buf, transitions)
 	writeFooter(&buf)
 
