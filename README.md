@@ -66,6 +66,11 @@ func main() {
 		fmt.Printf("OnTransition: %s -> %s\n", last, current)
 	})
 
+	/// Print the states and events
+	fmt.Printf("Events: %v\n", fsm.Events())
+	fmt.Printf("States: %v\n", fsm.States())
+	fmt.Printf("TerminationStates: %v\n", fsm.Terminations()) // No Termination States
+
 	/// Send the events to the state machine
 	fmt.Println("------ Transition ------")
 	last := fsm.Current()
@@ -105,6 +110,9 @@ func main() {
 	fmt.Println(fsm.VisualizeMermaidStateDiagram())
 
 	// Output:
+	// Events: [EventBar EventFoo]
+	// States: [StateFoo StateBar]
+	// TerminationStates: []
 	// ------ Transition ------
 	// OnExitState: StateFoo
 	// OnExit: StateFoo
