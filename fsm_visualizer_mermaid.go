@@ -30,9 +30,12 @@ func (f *FSM) VisualizeMermaidStateDiagram() string {
 	transitions := cloneAndSortTransitions(f.Transitions())
 
 	buf.WriteString("stateDiagram-v2\n")
-	buf.WriteString(fmt.Sprintln(`    [*] -->`, f.Current()))
+	fmt.Fprintf(&buf, "    [*] --> %s\n", f.Current())
 	for _, t := range transitions {
-		fmt.Fprintf(&buf, `    %s --> %s: %s`+"\n", t.Source, t.Target, t.Event)
+		fmt.Fprintf(&buf, "    %s --> %s: %s\n", t.Source, t.Target, t.Event)
+	}
+	for _, s := range f.Terminations() {
+		fmt.Fprintf(&buf, "    %s --> [*]\n", s)
 	}
 
 	return buf.String()
